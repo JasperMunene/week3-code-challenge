@@ -96,13 +96,31 @@ function handleClick(id) {
                         tickets_sold: tickets_sold + 1
                     })
                 })
-                .then(() => {
-                    fetchFilmDetails(id);  
-                    fetchFilmTitles();     
-                })
-                .catch(error => {
-                    console.error('Error updating ticket count:', error);
-                });
+                    .then(() => {
+                        fetch(`http://localhost:3000/tickets`, {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Accept": "application/json"
+                            },
+                            body: JSON.stringify({
+                                film_id: id,
+                                number_of_tickets: 1
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(ticketData => {
+                                console.log('Ticket purchase successful:', ticketData);
+                                fetchFilmDetails(id);
+                                fetchFilmTitles();
+                            })
+                            .catch(error => {
+                                console.error('Error posting ticket purchase:', error);
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Error updating ticket count:', error);
+                    });
             }
         })
         .catch(error => {
@@ -119,17 +137,17 @@ function handleDelete(id) {
             "Accept": "application/json"
         },
     })
-    .then(() => {
-        alert('Deleted Successfully');
-        fetchFilmTitles();  
-    })
-    .catch(error => {
-        console.error('Error deleting film:', error);
-    });
+        .then(() => {
+            alert('Deleted Successfully');
+            fetchFilmTitles();
+        })
+        .catch(error => {
+            console.error('Error deleting film:', error);
+        });
 }
 
 // Initialize the app when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    fetchFilmDetails(1); 
+    fetchFilmDetails(1);
     fetchFilmTitles();
 });
