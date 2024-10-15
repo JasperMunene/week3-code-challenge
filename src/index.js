@@ -11,6 +11,7 @@ function fetchFilmDetails(id) {
             document.getElementById('showtime').innerText = showtime;
             document.getElementById('ticket-num').innerText = `${capacity - tickets_sold} remaining tickets`;
             document.getElementById('poster').src = poster;
+            document.getElementById('poster').alt = title
 
             const availableTickets = capacity - tickets_sold;
 
