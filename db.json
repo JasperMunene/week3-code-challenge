@@ -36,7 +36,7 @@
       "runtime": "101",
       "capacity": 40,
       "showtime": "09:00PM",
-      "tickets_sold": 31,
+      "tickets_sold": 7,
       "description": "A young man meets a farm girl who is actually a witch.",
       "poster": "https://www.gstatic.com/tv/thumb/v22vodart/43468/p43468_v_v8_aa.jpg"
     },
@@ -76,7 +76,7 @@
       "runtime": "115",
       "capacity": 40,
       "showtime": "08:30PM",
-      "tickets_sold": 32,
+      "tickets_sold": 33,
       "description": "On an isolated island, a small group of people are terrorized by giant voracious shrews in the midst of a hurricane.",
       "poster": "https://www.gstatic.com/tv/thumb/v22vodart/1466/p1466_v_v8_ab.jpg"
     },
@@ -106,7 +106,7 @@
       "runtime": "104",
       "capacity": 30,
       "showtime": "06:00PM",
-      "tickets_sold": 12,
+      "tickets_sold": 13,
       "description": "A group of swingin' teens take time out from having fun in the sun to try to foil a group of crooks searching for a stolen scroll.",
       "poster": "https://www.gstatic.com/tv/thumb/v22vodart/58122/p58122_v_v8_aa.jpg"
     },
@@ -152,15 +152,26 @@
       "poster": "https://www.gstatic.com/tv/thumb/v22vodart/37991/p37991_v_v8_aa.jpg"
     }
   ],
-
-"tickets": [
+  "tickets": [
     {
-      "id": "1",
-      "film_id": "1",
-      "number_of_tickets": 5
-   }
+      "id": "76d8",
+      "film_id": "11",
+      "number_of_tickets": 1
+    },
+    {
+      "id": "ddc1",
+      "film_id": "8",
+      "number_of_tickets": 1
+    },
+    {
+      "id": "1500",
+      "film_id": "4",
+      "number_of_tickets": 1
+    },
+    {
+      "id": "aa0b",
+      "film_id": "4",
+      "number_of_tickets": 1
+    }
   ]
 }
-
-
- 

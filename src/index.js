@@ -1,5 +1,9 @@
 // Fetch and display the details of a selected film by id
+let selectedID = 1;
 function fetchFilmDetails(id) {
+    if (selectedID !== id) {
+        selectedID = id; // Update selected ID only if it's a different film
+    }
     fetch(`http://localhost:3000/films/${id}`)
         .then(response => response.json())
         .then(data => {
@@ -11,10 +15,9 @@ function fetchFilmDetails(id) {
             document.getElementById('showtime').innerText = showtime;
             document.getElementById('ticket-num').innerText = `${capacity - tickets_sold} remaining tickets`;
             document.getElementById('poster').src = poster;
-            document.getElementById('poster').alt = title
+            document.getElementById('poster').alt = title;
 
             const availableTickets = capacity - tickets_sold;
-
             const buyButton = document.getElementById('buy-ticket');
 
             // If the movie is sold out, disable the button and update its text
@@ -28,7 +31,9 @@ function fetchFilmDetails(id) {
             }
 
             // Update the click handler for buying tickets
-            buyButton.onclick = () => handleClick(id);
+            buyButton.onclick = (event) => handleClick(event, id); 
+
+            fetchTickets(id);
         })
         .catch(error => {
             console.error('Error fetching film details:', error);
@@ -41,12 +46,12 @@ function fetchFilmTitles() {
         .then(response => response.json())
         .then(data => {
             const ul = document.getElementById('films');
-            ul.innerHTML = ''; // Clear previous list
-
+            ul.innerHTML = '';
             data.forEach(film => {
                 const { id, title, capacity, tickets_sold } = film;
 
                 const li = document.createElement('li');
+                li.dataset.id = id; // Store film ID in the dataset
                 const liContent = document.createElement('span');
                 const deleteButton = document.createElement('button');
 
@@ -67,10 +72,16 @@ function fetchFilmTitles() {
                 ul.appendChild(li);
 
                 // Add event listener to fetch and display the selected film's details
-                liContent.addEventListener('click', () => fetchFilmDetails(id));
+                liContent.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    fetchFilmDetails(id);
+                });
 
                 // Assign delete functionality to the delete button
-                deleteButton.addEventListener('click', () => handleDelete(id));
+                deleteButton.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    handleDelete(id);
+                });
             });
         })
         .catch(error => {
@@ -79,7 +90,8 @@ function fetchFilmTitles() {
 }
 
 // Handle the logic for reducing the number of available tickets when the button is clicked
-function handleClick(id) {
+function handleClick(event, id) {
+    event.preventDefault();
     fetch(`http://localhost:3000/films/${id}`)
         .then(response => response.json())
         .then(data => {
@@ -141,14 +153,58 @@ function handleDelete(id) {
         .then(() => {
             alert('Deleted Successfully');
             fetchFilmTitles();
+
+            // If the deleted film is the currently selected one, reset the film details
+            if (id === selectedID) {
+                selectedID = null;
+                const films = document.querySelectorAll('#films .film.item');
+                if (films.length > 0) {
+                    const firstFilmId = films[0].dataset.id;
+                    fetchFilmDetails(firstFilmId);
+                } else {
+                    // Clear film details
+                    document.getElementById('title').innerText = '';
+                    document.getElementById('runtime').innerText = '';
+                    document.getElementById('film-info').innerText = '';
+                    document.getElementById('showtime').innerText = '';
+                    document.getElementById('ticket-num').innerText = '';
+                    document.getElementById('poster').src = '';
+                    document.getElementById('poster').alt = '';
+                }
+            }
         })
         .catch(error => {
             console.error('Error deleting film:', error);
         });
 }
 
+// Fetch tickets and display the number of tickets purchased for a specific movie
+function fetchTickets(filmId) {
+    fetch(`http://localhost:3000/tickets?film_id=${filmId}`)
+        .then(response => response.json())
+        .then(tickets => {
+            const ticketContainer = document.querySelector('.ticket-container');
+            ticketContainer.innerHTML = '';
+
+            if (tickets.length === 0) {
+                const noTicketsParagraph = document.createElement('p');
+                noTicketsParagraph.innerText = 'No tickets purchased for this movie yet.';
+                ticketContainer.appendChild(noTicketsParagraph);
+            } else {
+                tickets.forEach(ticket => {
+                    const ticketParagraph = document.createElement('p');
+                    ticketParagraph.innerText = `Tickets bought: ${ticket.number_of_tickets}`;
+                    ticketContainer.appendChild(ticketParagraph);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching tickets:', error);
+        });
+}
+
 // Initialize the app when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    fetchFilmDetails(1);
+document.addEventListener('DOMContentLoaded', (event) => {
+    fetchFilmDetails(selectedID);
     fetchFilmTitles();
 });
